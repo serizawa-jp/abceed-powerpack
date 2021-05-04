@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build": "parcel build --no-source-maps --experimental-scope-hoisting -o index.min.js src/index.js",
+    "build": "parcel build --out-dir docs --no-source-maps --experimental-scope-hoisting -o index.min.js src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

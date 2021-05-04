@@ -118,37 +118,37 @@
     });
 
     setInterval(() => {
-        if (gamepadIndex !== undefined) {
-            const gp = navigator.getGamepads()[gamepadIndex];
-            gp.buttons
-                .map((e) => e.pressed)
-                .forEach((isPressed, idx) => {
-                    if (isPressed) {
-                        switch (idx) {
-                            case 0:
-                                clickKnownButton();
-                                break;
-                            case 1:
-                                clickCommentaryButton();
-                                break;
-                            case 2:
-                                playAudio();
-                                break;
-                            case 3:
-                                clickUnknownButton();
-                                break;
-                            default:
-                                console.log(`unknown button index: ${idx}`);
-                                break;
-                        }
-                    }
-                });
+        if (gamepadIndex === undefined) return;
 
-            if (gp.axes[0] === 1) switchToExample();
-            if (gp.axes[1] === 1) switchToWord();
-            if (gp.axes[0] === -1) switchToExampleJa();
-            if (gp.axes[1] === -1) switchToWordJa();
-        }
+        const gp = navigator.getGamepads()[gamepadIndex];
+        gp.buttons
+            .map((e) => e.pressed)
+            .forEach((isPressed, idx) => {
+                if (isPressed) {
+                    switch (idx) {
+                        case 0:
+                            clickKnownButton();
+                            break;
+                        case 1:
+                            clickCommentaryButton();
+                            break;
+                        case 2:
+                            playAudio();
+                            break;
+                        case 3:
+                            clickUnknownButton();
+                            break;
+                        default:
+                            console.log(`unknown button index: ${idx}`);
+                            break;
+                    }
+                }
+            });
+
+        if (gp.axes[0] === 1) switchToExample();
+        if (gp.axes[1] === 1) switchToWord();
+        if (gp.axes[0] === -1) switchToExampleJa();
+        if (gp.axes[1] === -1) switchToWordJa();
     }, 100);
 
     const timeout = () => {
