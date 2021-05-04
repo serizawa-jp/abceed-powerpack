@@ -1,11 +1,62 @@
 (() => {
+    const Mousetrap = require("mousetrap");
+
+    const config = {
+        showCommentaryKey: {
+            key: "space",
+            cb: () => clickCommentaryButton(),
+            getElem: () => document.querySelector(".commentary-button"),
+        },
+        pressKnownButtonKey: {
+            key: "k",
+            cb: () => clickKnownButton(),
+            getElem: () => document.querySelector(".choice-button.is-known"),
+        },
+        pressUnknownButtonKey: {
+            key: "j",
+            cb: () => clickUnknownButton(),
+            getElem: () => document.querySelector(".choice-button.is-unknown"),
+        },
+        pressExampleButtonKey: {
+            key: "1",
+            cb: () => switchToExample(),
+            getElem: () => getModeElem("例文"),
+        },
+        pressWordButtonKey: {
+            key: "2",
+            cb: () => switchToWord(),
+            getElem: () => getModeElem("単語"),
+        },
+        pressExampleJaButtonKey: {
+            key: "3",
+            cb: () => switchToExampleJa(),
+            getElem: () => getModeElem("例文訳"),
+        },
+        pressWordJaButtonKey: {
+            key: "4",
+            cb: () => switchToWordJa(),
+            getElem: () => getModeElem("単語訳"),
+        },
+        playAudioKey: {
+            key: "p",
+            cb: () => playAudio(),
+            getElem: null,
+        },
+    }
+
+    const addKeyLabel = (e, key) => e.textContent = `${e.textContent} [${key.toUpperCase()}]`;
+    const getButtonOriginalLabel = (text) => text?.trim().split(" ")[0];
+
     const getChangeModeButtons = () =>
         Array.from(document.querySelectorAll(".change-phrase-mode-btn a"));
-    const switchMode = (mode) => {
+    const getModeElem = (mode) => {
+        let e = null;
         getChangeModeButtons().forEach((b) => {
-            if (b.textContent.trim() === mode) b.click();
+            if (getButtonOriginalLabel(b.textContent) === mode) e = b;
         });
-    };
+        return e;
+    }
+    const switchMode = (mode) => getModeElem(mode)?.click();
 
     const switchToExample = () => switchMode("例文");
     const switchToExampleJa = () => switchMode("例文訳");
@@ -21,6 +72,11 @@
         document.querySelector(".choice-button.is-unknown")?.click();
 
     const activate = () => {
+        autoOpenDictionary();
+        enableKeyShortCut();
+    };
+
+    const autoOpenDictionary = () => {
         const answerElem = document.querySelector(".commentary-area");
         if (answerElem === null || answerElem.dataset.searched) return;
         answerElem.dataset.searched = "true";
@@ -28,8 +84,33 @@
         const w = document
             .querySelector(".marksheet-answer__paragraph")
             .textContent?.trim();
-        window.open(`mkdictionaries:///?text=${w}&category=en-ja`, "_blank");
-    };
+        navigator.clipboard.writeText(w);
+    }
+
+    const enableKeyShortCut = () => {
+        // add key event listener
+        (() => {
+            const getElem = () => document.querySelector(".study-content-area");
+            if (getElem().dataset.enableKeyShortCut) return;
+            getElem().dataset.enableKeyShortCut = "true";
+
+            for (const [_, obj] of Object.entries(config)) {
+                const key = obj.key;
+                Mousetrap.bind(key, () => obj.cb());
+            }
+        })();
+
+        // add key label
+        for (const [_, obj] of Object.entries(config)) {
+            const getElem = obj.getElem;
+            if (!getElem) continue;
+
+            const e = getElem();
+            if (!e || e.dataset.added) continue;
+            e.dataset.added = "true";
+            addKeyLabel(e, obj.key);
+        }
+    }
 
     let gamepadIndex;
     window.addEventListener("gamepadconnected", (event) => {
@@ -67,7 +148,6 @@
             if (gp.axes[1] === 1) switchToWord();
             if (gp.axes[0] === -1) switchToExampleJa();
             if (gp.axes[1] === -1) switchToWordJa();
-            console.log(`axes: \n[0]: ${gp.axes[0]} \n[1]: ${gp.axes[1]} \n[2]: ${gp.axes[2]} \n[3]: ${gp.axes[3]} \n`);
         }
     }, 100);
 
@@ -75,7 +155,7 @@
         setTimeout(function () {
             activate();
             timeout();
-        }, 500);
+        }, 300);
     };
 
     timeout();
