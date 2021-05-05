@@ -95,6 +95,11 @@
 
         const t = e?.textContent;
         if (/\[[0-9A-Z]+\]/.test(t)) return;
+
+        if (Array.from(e.classList).includes("button-text")) {
+            e.insertAdjacentHTML('beforeend', `<span>[${key.toUpperCase()}]</span>`);
+            return;
+        }
         e.textContent = `${t} [${key.toUpperCase()}]`;
     }
     const getButtonOriginalLabel = (text) => text?.trim().split(" ")[0];
@@ -130,7 +135,7 @@
     const clickNextButton = () => document.querySelector(".bottom-navs__short-nav--right a")?.click();
     const clickAgainButton = () => document.querySelector(".bottom-navs__short-nav--left a")?.click();
     const getAnswer = (n) => {
-        const a = Array.from(document.querySelectorAll(".selection-button-wrapper button"));
+        const a = Array.from(document.querySelectorAll(".selection-button-wrapper button>span"));
         if (a.length < 4) return null;
         return a[n - 1];
     }
