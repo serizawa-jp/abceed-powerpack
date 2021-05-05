@@ -94,7 +94,7 @@
         if (!e) return;
 
         const t = e?.textContent;
-        if (t?.includes("[")) return;
+        if (/\[[0-9A-Z]+\]/.test(t)) return;
         e.textContent = `${t} [${key.toUpperCase()}]`;
     }
     const getButtonOriginalLabel = (text) => text?.trim().split(" ")[0];
@@ -187,22 +187,38 @@
             .map((e) => e.pressed)
             .forEach((isPressed, idx) => {
                 if (isPressed) {
+                    if (location.href.includes("word-test-confirm")) {
+                        switch (idx) {
+                            case 0:
+                                clickAnswer(2);
+                                break;
+                            case 1:
+                                clickAnswer(1);
+                                break;
+                            case 2:
+                                clickAnswer(3);
+                                break;
+                            case 3:
+                                clickAnswer(4);
+                                break;
+                            default:
+                                console.log(`unknown button index: ${idx}`);
+                                break;
+                        }
+                        return;
+                    }
                     switch (idx) {
                         case 0:
                             clickKnownButton();
-                            clickAnswer(2);
                             break;
                         case 1:
                             clickCommentaryButton();
-                            clickAnswer(1);
                             break;
                         case 2:
                             playAudio();
-                            clickAnswer(3);
                             break;
                         case 3:
                             clickUnknownButton();
-                            clickAnswer(4);
                             break;
                         default:
                             console.log(`unknown button index: ${idx}`);
