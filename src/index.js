@@ -148,12 +148,12 @@
     };
 
     const autoOpenDictionary = () => {
-        const answerElem = document.querySelector(".commentary-area");
+        const answerElem = document.querySelector(".commentary-area,.answer-check");
         if (answerElem === null || answerElem.dataset.searched) return;
         answerElem.dataset.searched = "true";
 
         const w = document
-            .querySelector(".marksheet-answer__paragraph")
+            .querySelector(".marksheet-answer__paragraph,.marksheet-answer__word")
             .textContent?.trim();
         navigator.clipboard.writeText(w);
     }
