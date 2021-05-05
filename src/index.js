@@ -10,12 +10,18 @@
             },
             getElems: () => document.querySelectorAll(".commentary-button,.bottom-navs__long-nav"),
         },
+        pressNextArrowButtonKey: {
+            key: "g",
+            cb: () => {
+                clickNextArrowButton();
+            },
+            getElems: null,
+        },
         pressKnownButtonKey: {
             key: "k",
             cb: () => {
                 clickKnownButton();
                 clickNextButton();
-                clickNextArrowButton();
             },
             getElems: () => document.querySelectorAll(".choice-button.is-known,.bottom-navs__short-nav--right a"),
         },
