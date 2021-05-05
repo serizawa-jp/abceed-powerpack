@@ -15,6 +15,7 @@
             cb: () => {
                 clickKnownButton();
                 clickNextButton();
+                clickNextArrowButton();
             },
             getElems: () => document.querySelectorAll(".choice-button.is-known,.bottom-navs__short-nav--right a"),
         },
@@ -134,8 +135,9 @@
     const clickConfirmationTestButton = () => document.querySelector(".bottom-navs__long-nav")?.click();
     const clickNextButton = () => document.querySelector(".bottom-navs__short-nav--right a")?.click();
     const clickAgainButton = () => document.querySelector(".bottom-navs__short-nav--left a")?.click();
+    const clickNextArrowButton = () => document.querySelector(".arrow-button-component.is-right")?.click();
     const getAnswer = (n) => {
-        const a = Array.from(document.querySelectorAll(".selection-button-wrapper button>span"));
+        const a = Array.from(document.querySelectorAll(".selection-button-wrapper button>span,.answer-area .button-content a"));
         if (a.length < 4) return null;
         return a[n - 1];
     }
@@ -152,9 +154,12 @@
         if (answerElem === null || answerElem.dataset.searched) return;
         answerElem.dataset.searched = "true";
 
-        const w = document
+        let w = document
             .querySelector(".marksheet-answer__paragraph,.marksheet-answer__word")
             .textContent?.trim();
+        if (location.href.includes("part-five-test")) {
+            w = document.querySelector(".marksheet-answer-body__body.is-correct")?.textContent?.trim().split("\n").slice(-1)[0]?.trim();
+        }
         navigator.clipboard.writeText(w);
     }
 
