@@ -190,11 +190,11 @@
                     switch (idx) {
                         case 0:
                             clickKnownButton();
-                            clickAnswer(1);
+                            clickAnswer(2);
                             break;
                         case 1:
                             clickCommentaryButton();
-                            clickAnswer(2);
+                            clickAnswer(1);
                             break;
                         case 2:
                             playAudio();
