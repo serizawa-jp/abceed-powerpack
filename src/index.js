@@ -19,17 +19,31 @@
     const getImageSearchQuery = (w) => `https://www.bing.com/images/search?q=${w}&form=QBLH&first=1&tsc=ImageBasicHover`;
 
     const createSearchImageButtonHandler = () => {
-        let panel = null;
         const option = {
+            id: "image-search-panel",
             closeOnEscape: true,
             contentSize: { width: () => window.innerWidth * 0.3, height: () => window.innerHeight * 0.8 },
             headerTitle: 'Search images',
             position: { my: 'left-bottom', at: 'left-bottom', offsetX: +10, offsetY: -10 },
             content: `<iframe id="${searchImageElementId}" src="https://www.bing.com/images/search?q=example" style="width: 100%; height: 100%;"/>`,
+            opacity: 0.8,
+            dragit: {
+                stop: (panel, paneldata, event) => {
+                    panel.style.opacity = 0.8;
+                }
+            },
+            onstatuschange: (panel, status) => {
+                panel.style.opacity = 0.8;
+            },
         };
 
         return () => {
-            if (!panel) panel = jsp.create(option);
+            const panels = jsp.getPanels();
+            if (panels.length === 0) {
+                jsp.create(option);
+                return;
+            }
+            panels.forEach(p => p.front());
         };
     }
 
