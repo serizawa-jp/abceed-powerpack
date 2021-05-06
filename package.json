@@ -1,13 +1,16 @@
 {
   "name": "abceed-powerpack",
   "version": "1.0.0",
-  "description": "",
+  "description": "Powerpack for abceed",
   "main": "src/index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "build": "parcel build --out-dir docs --no-source-maps --experimental-scope-hoisting -o index.min.js src/index.js",
+    "dev": "npm run build:extension && webextension-toolbox dev",
+    "build": "npm run build:extension && webextension-toolbox build",
+    "build:extension": "parcel build --out-dir app/scripts --no-source-maps --experimental-scope-hoisting -o background.js src/index.js",
+    "build:bookmarklet": "parcel build --out-dir docs --no-source-maps --experimental-scope-hoisting -o index.min.js src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +24,8 @@
   },
   "homepage": "https://github.com/serizawa-jp/abceed-powerpack#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.12.5"
+    "parcel-bundler": "^1.12.5",
+    "webextension-toolbox": "^3.0.0"
   },
   "dependencies": {
     "jspanel4": "^4.11.4",
