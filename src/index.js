@@ -246,6 +246,7 @@
         }
 
         const iframe = getSearchImageIframe();
+        if (!iframe) return;
         iframe.src = getImageSearchQuery(w);
     }
 
