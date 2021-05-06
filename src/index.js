@@ -1,5 +1,67 @@
 (() => {
     const Mousetrap = require("mousetrap");
+    const jsPanel = require("jspanel4");
+    const jsp = jsPanel.jsPanel;
+    jsp.ziBase = 500;
+
+    const loadCSS = () => {
+        ["https://cdn.jsdelivr.net/npm/jspanel4@4.11.1/dist/jspanel.css"].forEach(href => {
+            const s = document.createElement("link");
+            s.href = href;
+            s.rel = "stylesheet";
+            document.getElementsByTagName("head")[0].appendChild(s);
+        });
+    }
+    loadCSS();
+
+    const searchImageElementId = "image-search-iframe";
+    const getSearchImageIframe = () => document.getElementById(searchImageElementId);
+    const getImageSearchQuery = (w) => `https://www.bing.com/images/search?q=${w}&form=QBLH&first=1&tsc=ImageBasicHover`;
+
+    const createSearchImageButtonHandler = () => {
+        const option = {
+            id: "image-search-panel",
+            closeOnEscape: true,
+            contentSize: { width: () => window.innerWidth * 0.3, height: () => window.innerHeight * 0.8 },
+            headerTitle: 'Search images',
+            position: { my: 'left-bottom', at: 'left-bottom', offsetX: +10, offsetY: -10 },
+            content: `<iframe id="${searchImageElementId}" src="https://www.bing.com/images/search?q=example" style="width: 100%; height: 100%;"/>`,
+            opacity: 0.8,
+            dragit: {
+                stop: (panel, paneldata, event) => {
+                    panel.style.opacity = 0.8;
+                }
+            },
+            onstatuschange: (panel, status) => {
+                panel.style.opacity = 0.8;
+            },
+        };
+
+        return () => {
+            const panels = jsp.getPanels();
+            if (panels.length === 0) {
+                jsp.create(option);
+                return;
+            }
+            panels.forEach(p => p.front());
+        };
+    }
+
+    const addSearchImageButton = () => {
+        const id = "search-image-button";
+        if (document.getElementById(id)) return;
+        const img = document.createElement("img");
+        img.id = id;
+        img.src = "https://serizawa-jp.github.io/abceed-powerpack/collections.svg";
+        img.classList.add("icon-setting-image");
+        img.addEventListener('click', createSearchImageButtonHandler());
+
+        const a = document.createElement("a");
+        a.classList.add("icon-setting")
+        a.style.cssText = "cursor: pointer; margin-left: 25px;";
+        a.appendChild(img);
+        document.querySelector(".exam-header-main__right .study-tool-wrapper span")?.prepend(a);
+    }
 
     const config = {
         showCommentaryKey: {
@@ -152,6 +214,8 @@
 
     const activate = () => {
         autoOpenDictionary();
+        autoSearchImage();
+        addSearchImageButton();
         enableKeyShortCut();
     };
 
@@ -167,6 +231,22 @@
             w = document.querySelector(".marksheet-answer-body__body.is-correct")?.textContent?.trim().split("\n").slice(-1)[0]?.trim();
         }
         navigator.clipboard.writeText(w);
+    }
+
+    const autoSearchImage = () => {
+        const answerElem = document.querySelector(".commentary-area,.answer-check");
+        if (answerElem === null || answerElem.dataset.searchedImage) return;
+        answerElem.dataset.searchedImage = "true";
+
+        let w = document
+            .querySelector(".marksheet-answer__paragraph,.marksheet-answer__word")
+            .textContent?.trim();
+        if (location.href.includes("part-five-test")) {
+            w = document.querySelector(".marksheet-answer-body__body.is-correct")?.textContent?.trim().split("\n").slice(-1)[0]?.trim();
+        }
+
+        const iframe = getSearchImageIframe();
+        iframe.src = getImageSearchQuery(w);
     }
 
     const enableKeyShortCut = () => {

@@ -28,6 +28,7 @@
     "webextension-toolbox": "^3.0.0"
   },
   "dependencies": {
+    "jspanel4": "^4.11.4",
     "mousetrap": "^1.6.5"
   }
 }
