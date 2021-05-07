@@ -219,11 +219,7 @@
         enableKeyShortCut();
     };
 
-    const autoOpenDictionary = () => {
-        const answerElem = document.querySelector(".commentary-area,.answer-check");
-        if (answerElem === null || answerElem.dataset.searched) return;
-        answerElem.dataset.searched = "true";
-
+    const getWord = () => {
         let w = document
             .querySelector(".marksheet-answer__paragraph,.marksheet-answer__word")
             .textContent?.trim();
@@ -235,7 +231,14 @@
           w = highlightedAnswer.textContent?.trim();
         }
 
-        navigator.clipboard.writeText(w);
+        return w;
+    }
+
+    const autoOpenDictionary = () => {
+        const answerElem = document.querySelector(".commentary-area,.answer-check");
+        if (answerElem === null || answerElem.dataset.searched) return;
+        answerElem.dataset.searched = "true";
+        navigator.clipboard.writeText(getWord());
     }
 
     const autoSearchImage = () => {
@@ -243,16 +246,9 @@
         if (answerElem === null || answerElem.dataset.searchedImage) return;
         answerElem.dataset.searchedImage = "true";
 
-        let w = document
-            .querySelector(".marksheet-answer__paragraph,.marksheet-answer__word")
-            .textContent?.trim();
-        if (location.href.includes("part-five-test")) {
-            w = document.querySelector(".marksheet-answer-body__body.is-correct")?.textContent?.trim().split("\n").slice(-1)[0]?.trim();
-        }
-
         const iframe = getSearchImageIframe();
         if (!iframe) return;
-        iframe.src = getImageSearchQuery(w);
+        iframe.src = getImageSearchQuery(getWord());
     }
 
     const enableKeyShortCut = () => {
