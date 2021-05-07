@@ -230,6 +230,11 @@
         if (location.href.includes("part-five-test")) {
             w = document.querySelector(".marksheet-answer-body__body.is-correct")?.textContent?.trim().split("\n").slice(-1)[0]?.trim();
         }
+        const highlightedAnswer = document.querySelector(".marksheet-answer__paragraph .word-orange-colored");
+        if (highlightedAnswer) {
+          w = highlightedAnswer.textContent?.trim();
+        }
+
         navigator.clipboard.writeText(w);
     }
 
