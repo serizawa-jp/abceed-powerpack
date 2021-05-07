@@ -224,7 +224,7 @@ import 'regenerator-runtime/runtime';
             const btn = getCloseButton();
             if (!btn) return;
             btn?.click();
-            await sleep(10);
+            await sleep(30);
         }
     }
 
