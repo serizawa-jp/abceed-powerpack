@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "jspanel4": "^4.11.4",
-    "mousetrap": "^1.6.5"
+    "mousetrap": "^1.6.5",
+    "regenerator-runtime": "^0.13.7"
   }
 }

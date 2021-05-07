@@ -1,8 +1,11 @@
+import 'regenerator-runtime/runtime';
 (() => {
     const Mousetrap = require("mousetrap");
     const jsPanel = require("jspanel4");
     const jsp = jsPanel.jsPanel;
     jsp.ziBase = 500;
+
+    const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
     const loadCSS = () => {
         ["https://cdn.jsdelivr.net/npm/jspanel4@4.11.1/dist/jspanel.css"].forEach(href => {
@@ -210,7 +213,20 @@
         return a[n - 1];
     }
     const clickAnswer = (n) => getAnswer(n)?.click();
-    const clickClose = () => document.querySelector(".exam-header .exam-header-main>a")?.click();
+    const clickClose = async () => {
+        jsp.getPanels().forEach(p => p?.close());
+        await sleep(10);
+
+        const maxLoopCount = 2000;
+        const getCloseButton = () => document.querySelector(".exam-header .exam-header-main>a");
+
+        for (let i = 0; i < maxLoopCount; i++) {
+            const btn = getCloseButton();
+            if (!btn) return;
+            btn?.click();
+            await sleep(30);
+        }
+    }
 
     const activate = () => {
         autoOpenDictionary();
@@ -228,7 +244,7 @@
         }
         const highlightedAnswer = document.querySelector(".marksheet-answer__paragraph .word-orange-colored");
         if (highlightedAnswer) {
-          w = highlightedAnswer.textContent?.trim();
+            w = highlightedAnswer.textContent?.trim();
         }
 
         return w;
