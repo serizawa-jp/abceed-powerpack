@@ -67,12 +67,15 @@ const addSearchImageButton = () => {
     document.querySelector(".exam-header-main__right .study-tool-wrapper span")?.prepend(a);
 }
 
+// TODO: キーをkeyとしたObjectに変更する
+// ex. spaceにいろんな機能を割り振りたい場合、keyに機能の名前をマッピングするやり方だとできないので
 const config = {
     showCommentaryKey: {
         key: "space",
         cb: () => {
             clickCommentaryButton();
             clickConfirmationTestButton();
+            toggleAudioPlayingStatus();
         },
         getElems: () => document.querySelectorAll(".commentary-button,.bottom-navs__long-nav"),
     },
@@ -80,6 +83,20 @@ const config = {
         key: "g",
         cb: () => {
             clickNextArrowButton();
+        },
+        getElems: null,
+    },
+    pressNextArrowButtonKey2: {
+        key: "right",
+        cb: () => {
+            clickNextArrowButton();
+        },
+        getElems: null,
+    },
+    pressPrevArrowButtonKey: {
+        key: "left",
+        cb: () => {
+            clickPrevArrowButton();
         },
         getElems: null,
     },
@@ -208,6 +225,7 @@ const clickConfirmationTestButton = () => document.querySelector(".bottom-navs__
 const clickNextButton = () => document.querySelector(".bottom-navs__short-nav--right a")?.click();
 const clickAgainButton = () => document.querySelector(".bottom-navs__short-nav--left a")?.click();
 const clickNextArrowButton = () => document.querySelector(".arrow-button-component.is-right")?.click();
+const clickPrevArrowButton = () => document.querySelector(".arrow-button-component.is-left")?.click();
 const getAnswer = (n) => {
     const a = Array.from(document.querySelectorAll(".selection-button-wrapper button>span,.answer-area .button-content a"));
     if (a.length < 4) return null;
@@ -228,6 +246,13 @@ const clickClose = async () => {
         await sleep(30);
     }
 }
+const toggleAudioPlayingStatus = () => {
+    const ctrls = Array.from(document.querySelectorAll(".sound-controller-main .sound-controller_item img"));
+    ctrls.filter(c => {
+        const t = c?.alt?.trim();
+        return t === "再生" || t === "一時停止";
+    }).forEach(c => c.click());
+}
 
 const activate = () => {
     autoOpenDictionary();
@@ -239,7 +264,7 @@ const activate = () => {
 const getWord = () => {
     let w = document
         .querySelector(".marksheet-answer__paragraph,.marksheet-answer__word")
-        .textContent?.trim();
+        ?.textContent?.trim();
     const href = location.href;
     if (href.includes("part-five-test") || href.includes("Part5Test")) {
         w = document.querySelector(".marksheet-answer-body__body.is-correct")?.textContent?.trim().split("\n").slice(-1)[0]?.trim();
@@ -256,7 +281,9 @@ const autoOpenDictionary = () => {
     const answerElem = document.querySelector(".commentary-area,.answer-check");
     if (answerElem === null || answerElem.dataset.searched) return;
     answerElem.dataset.searched = "true";
-    navigator.clipboard.writeText(getWord());
+    const w = getWord();
+    if (!w) return;
+    navigator.clipboard.writeText(w);
 }
 
 const autoSearchImage = () => {
@@ -266,7 +293,10 @@ const autoSearchImage = () => {
 
     const iframe = getSearchImageIframe();
     if (!iframe) return;
-    iframe.src = getImageSearchQuery(getWord());
+
+    const w = getWord();
+    if (!w) return;
+    iframe.src = getImageSearchQuery(w);
 }
 
 const enableKeyShortCut = () => {
